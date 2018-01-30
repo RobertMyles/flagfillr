@@ -36,6 +36,10 @@ That's pure unadulterated awesome-sauce, right there.
 
 So in the unlikely event you find yourself pining for flags in a ggplot2 map, flagfillr has got you covered.
 
+<br> This package is designed to be quick and easy to use. As such, it's not sooo flexible. If you'd like to use your own data, or mess around with things, I recommend taking a look at the .R files, I hope they're reasonably easy to understand. Then you can hack away to your heart's content. The logic is simple: import the flags using `readPNG()`, establish the boundaries of the geometry, filter the flag *into* the geometry shape, use that as a fill.
+
+<br> Pull requests and issues are welcome. I particularly welcome any datasets of flags in png format! <f0><U+009F><U+0097><U+00BE>.
+
 Related
 -------
 
@@ -44,7 +48,7 @@ I should mention that this isn't new: XX shows how to do it with grid graphics i
 Thanks
 ------
 
-The main data wrangling function in this package is not painfully slow because the talented Daniel Falbel helped me out with purrr's map2. And I don't have [distastrous 'outliers']() (get it?) because of the help of the gifted Julio Trecenti. Obrigado, pessoal!
+The main data wrangling function in this package is not painfully slow because the talented Daniel Falbel helped me out with purrr's map2. And I don't have [distastrous 'outliers'](https://stackoverflow.com/questions/48366952/check-if-sf-geometry-is-contiguous-in-r) (get it?) because of the help of the gifted Julio Trecenti. Obrigado, pessoal!
 
 ``` r
 ## basic example code
