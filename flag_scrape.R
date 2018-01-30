@@ -2,9 +2,9 @@ library(rvest)
 
 # urls
 # base url: https://en.wikipedia.org/wiki/
-flags <- c("Argentine", "Armenian", "Australian", "Austrian", "Bangladeshi", "Belgian",
+flags <- c("Armenian", "Australian", "Austrian", "Bangladeshi", "Belgian",
            "Canadian", "Chilean", "Chinese", "Colombian", "Danish", "Dutch", "Egyptian",
-           "French", "German", "Greek", "Hungarian", "Icelandic", "Indian", "Italian", 
+           "French", "Greek", "Hungarian", "Icelandic", "Italian", 
            "Japanese", "Mexican", "Pakistani", "Portuguese", "Russian", "Spanish", 
            "South_African", "Korean")
 url_list <- vector("list", length(flags))

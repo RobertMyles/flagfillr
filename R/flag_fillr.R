@@ -196,17 +196,16 @@ flag_fillr_states <- function(country = "", resolution = c("small", "large"),
     left_join(data, country_list) %>% 
       mutate(flag_image = list(array(NA, c(1, 1, 3))))
   )
+  flag_filter <- gsub("\\.png", "", flags_dir)
+  data <- data %>% 
+    dplyr::filter(name %in% flag_filter)
+  
   flags <- paste0(data$name, ".png")
   #flags <- paste0("../state-flags/", country2, "-flags/png", pixels, "px/", flags)
   flags <- paste0("../state-flags/", country2, "-flags/", flags)
+  
   for(i in 1:nrow(data)){
-    try(
-      XX <- readPNG(source = flags[[i]]),
-      silent = FALSE
-      )
-    if(class(XX) == "try-error"){
-      next
-    } else data$flag_image[[i]] <- XX
+    data$flag_image[[i]] <- readPNG(source = flags[[i]])
   }
   
   output <- flag_fillr(data)
