@@ -38,7 +38,7 @@ So in the (un)likely event you find yourself pining for flags in a ggplot2 map, 
 
 <br> This package is designed to be quick and easy to use. As such, it's not sooo flexible. If you'd like to use your own data, or mess around with things, I recommend taking a look at the .R files, I hope they're reasonably easy to understand. Then you can hack away to your heart's content. The logic is simple: import the flags using `readPNG()`, establish the boundaries of the geometry, filter the flag *into* the geometry shape, use that as a fill.
 
-<br> Pull requests and issues are welcome. I particularly welcome any datasets of flags in png format! The plotting of state-level flags is still a bit messy, and removing islands and far-off territories could be much better.
+<br> Pull requests and issues are welcome. I particularly welcome any datasets of flags in png format! The plotting of state-level flags is still a bit messy, and removing islands and far-off territories could be much better. The flags are great, though (Argentina has some good ones).
 
 Related
 -------
