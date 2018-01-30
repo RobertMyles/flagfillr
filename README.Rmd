@@ -25,6 +25,9 @@ You can install flagfillr from github with:
 devtools::install_github("RobertMyles/flag_fillr")
 ```
 
+<br>
+**Important Note:** flagfillr works with ggplot2's `geom_sf()`, which is currently only available in the current development version of ggplot2 (version 2.2.1.9000).  
+
 ## Example
 
 This is a basic example which shows you how to solve a common problem:
