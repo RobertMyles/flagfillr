@@ -28,13 +28,39 @@ devtools::install_github("RobertMyles/flag_fillr")
 <br>
 **Important Note:** flagfillr works with ggplot2's `geom_sf()`, which is currently only available in the current development version of ggplot2 (version 2.2.1.9000).  
 
-## Example
+## Why??! For the love of god, why??!!!
 
-This is a basic example which shows you how to solve a common problem:
+Well, I'm happy you asked. Imagine you saw the following image (published by the Brazilian government and freely available):
+
+(use drunkneysian's?)
+
+![](mapaexportacoes.jpg)
+
+Or worse, this monstrosity (deals with the same subject):
+![](table.jpg)
+
+Isn't this sooo much nicer?
+
+Ok...it depends on some knowledge of flags, but look! They're so purty. And, I mean, just look at Africa...
+
+
+
+That's pure unadulterated awesome-sauce, right there. 
+
+So in the unlikely event you find yourself pining for flags in a ggplot2 map, flagfillr has got you covered.
+
+## Related
+I should mention that this isn't new: XX shows how to do it with grid graphics in XX. And ggplot2 is based on grid graphics. But I haven't seen a ggplot2 one, so...
+
+## Thanks
+The main data wrangling function in this package is not painfully slow because the talented Daniel Falbel helped me out with purrr's map2. And I don't have [distastrous 'outliers']() (get it?) because of the help of the gifted Julio Trecenti. Obrigado, pessoal!
 
 ```{r example}
 ## basic example code
 ```
+
+## Flags
+The flags used in this repo come from XX and XX. The state flags (Brazil) come from XX and the US come from XX. It's my understanding that these flags are free to use, and are available on Wikipedia. Thanks to Wikipedia and the contributors of the above-linked projects for their work on making these flags available and easy to get.
 
 ## to do
 -[] create repos of flag pngs 
