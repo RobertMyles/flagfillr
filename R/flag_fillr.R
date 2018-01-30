@@ -52,11 +52,11 @@ flag_fillr_continent <- function(continent = c("North America", "Asia", "Africa"
                                  resolution = c("small", "large"), 
                                  size = c("100", "250", "1000")
                                  ){
-  #### flags ####
+  #### porganise flag paths ####
   pixels <- match.arg(size, choices = c("100", "250", "1000"))
   flags_dir <- dir(paste0("../country-flags/png", pixels, "px/"))
   
-  ##### data #####
+  ##### get data #####
   res <- match.arg(resolution, choices = c("small", "large"))
   if(res == "small"){
     data <- rnaturalearth::countries110 %>% sf::st_as_sf()
@@ -68,12 +68,12 @@ flag_fillr_continent <- function(continent = c("North America", "Asia", "Africa"
     dplyr::select(name, iso = iso_a2, continent, geometry) %>% 
     dplyr::filter(continent == UQ(continent)) %>% 
     mutate(iso = tolower(iso))
-  
+  # match to flags
   country_list <- flags_dir %>% gsub("\\.png", '', .) %>% 
     .[which(!. %in% data$iso)] %>% 
     as_data_frame() %>% 
     rename(iso = value)
-  
+  # read pngs
   data <- suppressMessages(
     left_join(data, country_list) %>% 
       mutate(flag_image = list(array(NA, c(1, 1, 3))))
@@ -285,7 +285,7 @@ flag_fillr <- function(df){
 ############# flag plot function ###############
 # uses: 
 # > packageVersion("ggplot2")
-# [1] ‘2.2.1.9000’
+# [1] 2.2.1.9000
 #devtools::install_github("tidyverse/ggplot2")
 flag_plotr <- function(df){
   # thanks to Julio Trecenti for the help!

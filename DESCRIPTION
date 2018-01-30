@@ -9,7 +9,6 @@ LazyData: true
 Imports: ggplot2 (>= 2.2.1.9000),
     magrittr (>= 1.5),
     tidyr (>= 0.7),
-    magrittr (>= 1.5),
     rnaturalearth (>= 0.1.0),
     rnaturalearthhires (>= 0.1.0),
     dplyr (>= 0.7.0),
