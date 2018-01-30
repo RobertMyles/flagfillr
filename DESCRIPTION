@@ -2,7 +2,7 @@ Package: flagfillr
 Title: Use flags as fills for ggplot2 maps
 Version: 0.0.0.9000
 Authors@R: person("Robert", "McDonnell", email = "robertmylesmcdonnell@gmail.com", role = c("aut", "cre"))
-Description: flagfillr has some convenience functions to create maps that use flags as fill arguments.
+Description: flagfillr has some convenience functions to create maps that use flags as fill arguments for ggplot2 maps.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

@@ -155,10 +155,12 @@ flag_fillr_states <- function(country = "", resolution = c("small", "large"),
                               remove_non_mainland = TRUE){
   #### flags ####
   #pixels <- match.arg(size, choices = c("100", "250", "1000"))
+  # leave one size?
   pixels <- "100"  # for now
   country <- tolower(country)
   country2 <- gsub(" ", "-", country)
-  flags_dir <- dir(paste0("../state-flags/", country2, "-flags/png", pixels, "px/"))
+  #flags_dir <- dir(paste0("../state-flags/", country2, "-flags/png", pixels, "px/"))
+  flags_dir <- dir(paste0("../state-flags/", country2, "-flags/"))
   
   ##### data #####
   data <- rnaturalearthhires::states10 %>% sf::st_as_sf() %>% 
@@ -167,16 +169,23 @@ flag_fillr_states <- function(country = "", resolution = c("small", "large"),
            name = tolower(name))
   
   data <- data %>% 
-    dplyr::filter(country == UQ(country)) %>% 
+    dplyr::filter(country == UQ(country), !is.na(name)) %>% 
     dplyr::mutate(name = stringi::stri_trans_general(name, "Latin-ASCII"),
            name = gsub(" ", "_", name))
   
   # some tidying up:
-  if(country == "united states of america"){
-    data <- data %>% 
-      dplyr::filter(!name %in% c("district_of_columbia", "alaska", "hawaii"))
+  if(remove_non_mainland == TRUE){
     # d3 with projections has a better way of doing this
+    if(country == "united states of america"){
+      data <- data %>% 
+        dplyr::filter(!name %in% c("district_of_columbia", "alaska", "hawaii"))
+    }
+    if(country == "netherlands"){
+      data <- data %>% 
+        dplyr::filter(!name %in% c("saba", "st._eustatius"))
+    }
   }
+  
   
   country_list <- flags_dir %>% gsub("\\.png", '', .) %>% 
     .[which(!. %in% tolower(data$name))] %>% 
@@ -188,9 +197,16 @@ flag_fillr_states <- function(country = "", resolution = c("small", "large"),
       mutate(flag_image = list(array(NA, c(1, 1, 3))))
   )
   flags <- paste0(data$name, ".png")
-  flags <- paste0("../state-flags/", country2, "-flags/png", pixels, "px/", flags)
+  #flags <- paste0("../state-flags/", country2, "-flags/png", pixels, "px/", flags)
+  flags <- paste0("../state-flags/", country2, "-flags/", flags)
   for(i in 1:nrow(data)){
-    data$flag_image[[i]] <- readPNG(source = flags[[i]])
+    try(
+      XX <- readPNG(source = flags[[i]]),
+      silent = FALSE
+      )
+    if(class(XX) == "try-error"){
+      next
+    } else data$flag_image[[i]] <- XX
   }
   
   output <- flag_fillr(data)
