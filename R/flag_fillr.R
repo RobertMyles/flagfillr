@@ -5,6 +5,7 @@
 #' @importFrom dplyr as_data_frame
 #' @importFrom dplyr rename
 #' @importFrom dplyr left_join
+#' @importFrom dplyr full_join
 #' @importFrom dplyr as_tibble
 #' @importFrom dplyr group_by
 #' @importFrom dplyr pull
@@ -19,6 +20,7 @@
 #' @importFrom sf st_bbox
 #' @importFrom sf st_coordinates
 #' @importFrom sf st_as_sf
+#' @importFrom sf st_join
 #' @importFrom magrittr set_colnames
 #' @importFrom magrittr "%>%"
 #' @importFrom scales rescale
@@ -130,6 +132,85 @@ flag_fillr_states <- function(country = "", remove_non_mainland = TRUE){
 #' flag_fillr_data()
 #' }
 #' @export
-flag_fillr_data <- function(data, type = c("continent", "country", "state")){
-
+flag_fillr_data <- function(data, partner_col = NULL,
+                            resolution = c("small", "large"),
+                            type = c("country", "state"),
+                            country = NULL, size = c("100", "250", "1000"),
+                            countries_col = NULL, states_col = NULL){
+  # data needs state/country; partner/image (map to iso codes); 
+  res <- match.arg(resolution, choices = c("small", "large"))
+  type = match.arg(type, choices = c("country", "state"))
+  pixels <- match.arg(size, choices = c("100", "250", "1000"))
+  
+  if(!is.null(countries_col)){
+    type <- "country"
+    countries <- countries_col
+  } else if(!is.null(states_col)){
+    type <- "state"
+    states <- states_col
+  }
+  
+  if(is.null(partner_col)){
+    stop("Need partner info")
+  }
+  partner <- partner_col
+  
+  # shortcut if data is already sf
+  
+  # data
+  
+  if(type == "states"){ ############# do states
+    country <- tolower(country)
+    df <- get_states_data(country)
+    }
+  
+  if(type == "country"){
+    countries <- tolower(countries)
+    partner <- tolower(partner)
+    if(res == "small"){
+      df <- rnaturalearth::countries110
+    } else{
+      df <- rnaturalearth::countries10
+    }
+    df_main <- df %>% sf::st_as_sf() %>%
+      dplyr::select(name, iso = iso_a2, geometry) %>%
+      mutate(name = tolower(name)) %>%
+      dplyr::filter(name %in% countries) %>%
+      mutate(iso = tolower(iso))
+    
+    df_user <- data %>% 
+      mutate(countries = tolower(countries),
+             partners = tolower(partners))
+    
+    df_partner <- df %>% st_as_sf() %>%
+      dplyr::select(name, iso = iso_a2) %>%
+      mutate(name = tolower(name)) %>%
+      dplyr::filter(name %in% partner) %>% 
+      mutate(iso = tolower(iso)) %>% 
+      select(partners = name, iso_partner = iso) %>% 
+      as_data_frame()
+    suppressMessages(
+      DF <- full_join(df_main, df_user, by = c("name" = "countries")) %>% 
+      as_data_frame() %>% 
+      full_join(df_partner) %>% st_as_sf()
+    )
+    
+    # flags based on iso_partner:
+    flags_dir <- dir(paste0(type, "-flags/png", pixels, "px/"))
+    country_list <- flags_dir %>% gsub("\\.png", '', .) %>%
+      .[which(. %in% DF$iso_partner)] %>%
+      as_data_frame() %>%
+      rename(iso = value)
+    DF <- suppressMessages(
+      left_join(DF, country_list) %>%
+        mutate(flag_image = list(array(NA, c(1, 1, 3))))
+    )
+    flags <- paste0(DF$iso_partner, ".png")
+    flags <- paste0(type, "-flags/png", pixels, "px/", flags)
+    for(i in 1:nrow(DF)){
+      DF$flag_image[[i]] <- readPNG(source = flags[[i]])
+    }
+    finalize(DF)
+  }
+  
 }

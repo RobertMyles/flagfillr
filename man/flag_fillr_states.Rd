@@ -4,14 +4,12 @@
 \alias{flag_fillr_states}
 \title{Use flags as a fill argument in a ggplot2 map}
 \usage{
-flag_fillr_states(country = "", resolution = c("small", "large"),
-  remove_non_mainland = TRUE)
+flag_fillr_states(country = "", remove_non_mainland = TRUE)
 }
 \arguments{
 \item{country}{\code{character}. For a list of countries, run
 \code{country_list_states()} in the R console. (This extra function is needed
 due to inconsistencies in the country names across rnaturalearth.)
-@param resolution resolution of rnaturalearthdata.
 @param remove_non_mainland filter out far-flung territories from the data?}
 }
 \description{

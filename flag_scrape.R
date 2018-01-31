@@ -3,7 +3,7 @@ library(rvest)
 # urls
 # base url: https://en.wikipedia.org/wiki/
 flags <- c("Armenian", "Australian", "Austrian", "Bangladeshi", "Belgian",
-           "Canadian", "Chilean", "Chinese", "Colombian", "Danish", "Dutch", "Egyptian",
+           "Canadian", "Chilean", "Colombian", "Danish", "Dutch", "Egyptian",
            "French", "Greek", "Hungarian", "Icelandic", "Italian", 
            "Japanese", "Mexican", "Pakistani", "Portuguese", "Russian", "Spanish", 
            "South_African", "Korean")
