@@ -11,6 +11,10 @@ flag_fillr_continent(continent = c("North America", "Asia", "Africa",
 }
 \arguments{
 \item{continent}{(\code{character}). Data come from the rnaturalearth package.}
+
+\item{resolution}{resolution of rnaturalearth data.}
+
+\item{size}{size of png image.}
 }
 \description{
 flagfillr is a small set of convenience functions for
@@ -18,7 +22,7 @@ you to use flags as fills in a ggplot2 map.
 }
 \examples{
 \dontrun{
-flag_fillr_continent(resolution = "small", size = 100, continent = "Africa")
+flag_fillr_continent( continent = "Africa", resolution = "small", size = 100)
 }
 }
 \author{

@@ -30,20 +30,80 @@ devtools::install_github("RobertMyles/flag_fillr")
 
 ## Why? For the love of god, why??!!!
 
-Well, I'm happy you asked. Imagine you saw the following image (published by the Brazilian government and freely available):
+Well, I'm happy you asked. Imagine you saw the following image, from the [Drunkneysian](http://drunkeynesian.blogspot.com.br/), taken from [here](https://brazilian.report/2017/11/27/brazil-important-trading-partners/):
 
-(use drunkneysian's?)
+![](brazil-trade-partners.jpg)
 
-![](mapaexportacoes.jpg)
+It's an interesting subject, and a handy visual summary of the data. But...
+<br>
+...isn't this sooo much nicer?
 
-Or worse, this monstrosity (deals with the same subject):
-![](table.jpg)
+```{r, eval = FALSE}
+library(rnaturalearth)
+library(flagfillr)
+library(dplyr)
+library(png)
+### data needs to be flexible user can choose one country or many
+### need to specify which flags to use in which areas
+br <- ne_states(country = "Brazil", returnclass = "sf")
+trade <- tibble(
+  state = br$name,
+  partner = NA_character_,
+  flag = NA_character_,
+  flag_image = list(array(NA, c(1, 1, 3)))
+) %>% 
+  mutate(partner = case_when(
+    state == "Acre" ~ "Peru",
+    state == "Alagoas" ~ "China",
+    state == "Amapá" ~ "USA",
+    state == "Amazonas" ~ "Argentina",
+    state == "Bahia" ~ "China",
+    state == "Ceará" ~ "USA",
+    state == "Distrito Federal" ~ "China",
+    state == "Espírito Santo" ~ "USA",
+    state == "Goiás" ~ "China",
+    state == "Maranhão" ~ "Canada",
+    state == "Mato Grosso" ~ "China",
+    state == "Mato Grosso do Sul" ~ "China",
+    state == "Minas Gerais" ~ "China",
+    state == "Pará" ~ "China",
+    state == "Paraíba" ~ "USA",
+    state == "Paraná" ~ "China",
+    state == "Pernambuco" ~ "Argentina",
+    state == "Piauí" ~ "China",
+    state == "Rio de Janeiro" ~ "China",
+    state == "Rio Grande do Norte" ~"USA",
+    state == "Rio Grande do Sul" ~ "China",
+    state == "Rondônia" ~ "Hong Kong",
+    state == "Roraima" ~ "Venezuela",
+    state == "Santa Catarina" ~ "USA",
+    state == "São Paulo" ~ "USA",
+    state == "Sergipe" ~ "Netherlands",
+    TRUE ~ "China"
+    ),
+    flag = case_when(
+      partner == "China" ~ "cn.png",
+      partner == "USA" ~ "us.png",
+      partner == "Argentina" ~ "ar.png",
+      partner == "Netherlands" ~ "nl.png",
+      partner == "Venezuela" ~ "ve.png",
+      partner == "Canada" ~ "ca.png",
+      partner == "Peru" ~ "pe.png",
+      TRUE ~ "hk.png"
+    ))
 
-Isn't this sooo much nicer?
+for(i in 1:27){
+  trade$flag_image[[i]] <- readPNG(source = trade$flag[[i]])
+}
+
+br <- select(br, state, geometry)
+brazil <- full_join(trade, br)
+flag_fillr_data(brazil, type = "state")
+```
 
 Ok...it depends on some knowledge of flags, but look! They're so purty. And, I mean, just look at Africa...
 
-
+![](africa.png)
 
 That's pure unadulterated awesome-sauce, right there. 
 

@@ -1,0 +1,8 @@
+.Rproj.user
+.Rhistory
+.RData
+.DS_Store
+R/.DS_Store
+country-flags/.DS_Store
+state-flags/.DS_Store
+state-flags/united-states-of-america-flags/.DS_Store
