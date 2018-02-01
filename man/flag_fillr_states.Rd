@@ -4,20 +4,23 @@
 \alias{flag_fillr_states}
 \title{Use flags as a fill argument in a ggplot2 map}
 \usage{
-flag_fillr_states(country = "", remove_non_mainland = TRUE)
+flag_fillr_states(country = NULL, mainland_only = TRUE)
 }
 \arguments{
 \item{country}{\code{character}. For a list of countries, run
 \code{country_list_states()} in the R console. (This extra function is needed
-due to inconsistencies in the country names across rnaturalearth.) See notes.
-@param remove_non_mainland filter out far-flung territories from the data?
-@note Not all countries currently have flags available in the package, or will ever have, since
-many don't have lower-administrative-level flags. Check the 'state-flags' folder on the github
-repo for this project (https://github.com/RobertMyles/flagfillr) to see what's currently available.}
+due to inconsistencies in the country names across rnaturalearth.) See notes.}
+
+\item{mainland_only}{filter out far-flung territories from the data?}
 }
 \description{
 \code{flag_fillr_states} uses state-level flags as a fill for a
 particular country.
+}
+\note{
+Not all countries currently have flags available in the package, or will ever have, since
+many don't have lower-administrative-level flags. Check the 'state-flags' folder on the github
+repo for this project (https://github.com/RobertMyles/flagfillr) to see what's currently available.
 }
 \examples{
 \dontrun{

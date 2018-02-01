@@ -1,7 +1,9 @@
+#' @title list of countries for flagfillr functions
 #' @export
 country_list <- function(){
   rnaturalearth::countries110 %>% st_as_sf() %>% pull(name) %>% unique() %>% sort()
 }
+#' @title list of countries for flag_fillr_state() function
 #' @export
 country_list_states <- function(){
   rnaturalearthhires::states10 %>% st_as_sf() %>% pull(country) %>% unique() %>% sort()
@@ -21,6 +23,7 @@ png_readr <- function(data, country, type, pixels){
     flags <- paste0(data$iso, ".png")
     flags <- paste0(type, "-flags/png", pixels, "px/", flags)
   } else{
+    country <- gsub(" ", "-", country)
     flags <- paste0(data$name, ".png")
     flags <- paste0(type, "-flags/", country, "-flags/", flags)
   }
@@ -57,3 +60,9 @@ finalize <- function(data){
   message("Creating plot...")
   flag_plotr(output)
 }
+
+## goddamn you global variables check
+if(getRversion() >= "2.15.1")  utils::globalVariables(
+  c(".", "geometry", ".id", "ADMIN", "CONTINENT", "ISO_A2",
+    "L2", "NAME", "X", "Y", "add_row", "admin", "color", "country",
+    "flags_dir", "iso", "iso_a2", 'mutate_all', "mutate_at", "name", "value"))

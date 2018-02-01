@@ -2,26 +2,26 @@
 #' @description \code{flag_fillr_states} uses state-level flags as a fill for a
 #' particular country.
 #' @param country \code{character}. For a list of countries, run
-#'  \code{country_list_states()} in the R console. (This extra function is needed
-#'  due to inconsistencies in the country names across rnaturalearth.) See notes.
-#'  @param remove_non_mainland filter out far-flung territories from the data?
-#'  @note Not all countries currently have flags available in the package, or will ever have, since
-#'  many don't have lower-administrative-level flags. Check the 'state-flags' folder on the github
-#'  repo for this project (https://github.com/RobertMyles/flagfillr) to see what's currently available.
+#' \code{country_list_states()} in the R console. (This extra function is needed
+#' due to inconsistencies in the country names across rnaturalearth.) See notes.
+#' @param mainland_only filter out far-flung territories from the data?
+#' @note Not all countries currently have flags available in the package, or will ever have, since
+#' many don't have lower-administrative-level flags. Check the 'state-flags' folder on the github
+#' repo for this project (https://github.com/RobertMyles/flagfillr) to see what's currently available.
 #' @examples
 #' \dontrun{
 #' flag_fillr_states(country = "Brazil", resolution = "small", size = 250)
 #' }
 #' @export
-flag_fillr_states <- function(country = "", remove_non_mainland = TRUE){
-  
+flag_fillr_states <- function(country = NULL, mainland_only = TRUE){
+
   country <- tolower(country)
   country2 <- gsub(" ", "-", country)
   flags_dir <- dir(paste0("state-flags/", country2, "-flags/"))
   data <- get_states_data(country)
-  
+
   # some tidying up:
-  if(remove_non_mainland == TRUE){
+  if(mainland_only == TRUE){
     # d3 with projections has a better way of doing this
     if(country == "united states of america"){
       data <- data %>%
@@ -31,7 +31,7 @@ flag_fillr_states <- function(country = "", remove_non_mainland = TRUE){
       data <- data %>%
         dplyr::filter(!name %in% c("saba", "st._eustatius"))
     }
-    
+
     flag_filterz <- gsub("\\.png", "", flags_dir)
     data <- data %>% dplyr::filter(name %in% flag_filterz)
     data <- png_readr(data, type = "state", country)
@@ -42,7 +42,7 @@ flag_fillr_states <- function(country = "", remove_non_mainland = TRUE){
     data <- png_readr(data, type = "state", country)
     finalize(data)
   }
-  
+
 }
 
 # get data for state flag datasets:

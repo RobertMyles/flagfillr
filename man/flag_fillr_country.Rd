@@ -10,4 +10,8 @@ flag_fillr_country(country = "", resolution = c("small", "large"),
 \arguments{
 \item{country}{\code{character}. For a list of countries, run
 \code{country_list()} in the R console.}
+
+\item{resolution}{detail of rnaturalearth data.}
+
+\item{size}{size of flag image.}
 }

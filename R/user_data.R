@@ -1,31 +1,36 @@
 #' @title Use flags as a fill argument in a ggplot2 map
 #' @description \code{flag_fillr_data} uses user-supplied data to get flags as a fill for a map of a
 #' particular country.
-#' @param data
-#' @param country if country is NULL, you must have country_col
-#' @param partner_col
-#' @details This function accepts a data.frame that must contain at least two columns: one for
-#' the base territory (i.e. the area that will be mapped), and another for the names of the countries
-#' whose flags will be used as fills in the map. If the goal is to fill states inside of one country,
-#' the base territory column should be called "state"; if you want to map entire countries with one fill,
-#' it should be called "country". The column of the flags to be used should be called "partner".
-#' If you would rather not rename the columns in your data, you can specify the 'partner'
-#' (\code{partner_col}), 'state' (\code{state_col}), and 'country' (\code{country_col}) columns.
-#' These must be the actual columns, written in the format \code{df$state}, where \code{df} is your
-#' data.frame and \code{state} is the 'state' column (with whatever name you have for it).
+#' @param data A \code{data.frame}, see details.
+#' @param country country name. If \code{country} is \code{NULL}, you must supply a \code{country_col}.
+#' @param partner_col column of partner countries. See details.
+#' @param resolution detail of rnaturalearth data.
+#' @param size size of flag image.
+#' @param type will you be plotting flags on countries or inside countries, on the states?
+#' @param state_col column of state names. Must be full names, see details.
+#' @param country_col column of country names. See details.
+#' @param mainland_only remove non-contiguous landmasses? Will remove places
+#' like Alaska, Hawaii, etc.
+#' @details This function accepts a data.frame that must contain at least two columns:
+#' one for the base territory (i.e. the area that will be mapped), and another
+#' for the names of the countries whose flags will be used as fills in the map.
+#' If the goal is to fill states inside of one country, the base territory column
+#' should be called "state"; if you want to map entire countries with one fill,
+#' it should be called "country". The column of the flags to be used should be called
+#' "partner".
+#' If you would rather not rename the columns in your data, you can specify the
+#' 'partner' (\code{partner_col}), 'state' (\code{state_col}), and 'country'
+#' (\code{country_col}) columns. These must be the actual columns, written in
+#' the format \code{df$state}, where \code{df} is your data.frame and
+#' \code{state} is the 'state' column (with whatever name you have for it). For
+#' information on acceptable country names, see \code{country_list()}.
 #' @examples
-#' \dontrun{
-#' df <- data.frame(
-#'  state = c("Drenthe", "Flevoland", "Frisian", "Gelderland", "Groningen",
-#'            "Limburg", "Noord-Brabant", "Noord-Holland", "Overijissel",
-#'            "Utrecht", "Zeeland", "Zuid-Holland"),
-#'  partner = c("Germany", "United Kingdom", "Germany", "United States",
-#'              "Denmark", "Norway", "Sweden", "Germany", "Belgium",
-#'              "France", "United Kingdom", "France"),
+#'us_data <- data.frame(
+#'  state = state.name, # I love R!
+#'  partner = c(rep("Mexico", 15), rep("Canada", 25), rep("China", 8), rep("Japan", 2)),
 #'  stringsAsFactors = FALSE
-#' )
-#' flag_fillr_data(df, country = "Netherlands", size = "250")
-#' }
+#'  )
+#' flag_fillr_data(us_data, country = "United States of America", size = "250")
 #' @export
 flag_fillr_data <- function(data = NULL, country = NULL,
                             partner_col = NULL,

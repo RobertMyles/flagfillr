@@ -29,12 +29,14 @@ flag_fillr_continent <- function(continent = c("North America", "Asia", "Africa"
 # get data for continent flag datasets:
 get_continent_data <- function(continent, res){
   if(res == "small"){
-    data <- rnaturalearth::countries110
+    data <- rnaturalearth::countries110 %>% sf::st_as_sf() %>%
+      dplyr::select(name, iso = iso_a2, continent, geometry) %>%
+      dplyr::filter(continent == UQ(continent)) %>%
+      mutate(iso = tolower(iso))
   } else{
-    data <- rnaturalearth::countries10
+    data <- rnaturalearthhires::countries10 %>% sf::st_as_sf() %>%
+      dplyr::select(name = NAME, iso = ISO_A2, continent = CONTINENT, geometry) %>%
+      dplyr::filter(continent == UQ(continent)) %>%
+      mutate(iso = tolower(iso))
   }
-  data <- data %>% sf::st_as_sf() %>%
-    dplyr::select(name, iso = iso_a2, continent, geometry) %>%
-    dplyr::filter(continent == UQ(continent)) %>%
-    mutate(iso = tolower(iso))
 }

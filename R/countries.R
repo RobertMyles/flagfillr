@@ -12,6 +12,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr filter
 #' @importFrom rlang UQ
+#' @importFrom grDevices rgb
 #' @importFrom rlang UQS
 #' @importFrom png readPNG
 #' @importFrom purrr map
@@ -41,6 +42,8 @@
 #' @title Use flags as a fill argument in a ggplot2 map
 #' @param country \code{character}. For a list of countries, run
 #'  \code{country_list()} in the R console.
+#' @param resolution detail of rnaturalearth data.
+#' @param size size of flag image.
 #' @export
 flag_fillr_country <- function(country = "", resolution = c("small", "large"),
                                size = c("100", "250", "1000")){
