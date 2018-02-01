@@ -38,67 +38,50 @@ It's an interesting subject, and a handy visual summary of the data. But...
 <br>
 ...isn't this sooo much nicer?
 
-```{r, eval = FALSE}
-library(rnaturalearth)
+```{r, echo = FALSE}
 library(flagfillr)
+library(rnaturalearth)
 library(dplyr)
-library(png)
+library(stringi)
 ### data needs to be flexible user can choose one country or many
 ### need to specify which flags to use in which areas
 br <- ne_states(country = "Brazil", returnclass = "sf")
 trade <- tibble(
+  country = "Brazil",
   state = br$name,
-  partner = NA_character_,
-  flag = NA_character_,
-  flag_image = list(array(NA, c(1, 1, 3)))
-) %>% 
-  mutate(partner = case_when(
-    state == "Acre" ~ "Peru",
-    state == "Alagoas" ~ "China",
-    state == "Amapá" ~ "USA",
-    state == "Amazonas" ~ "Argentina",
-    state == "Bahia" ~ "China",
-    state == "Ceará" ~ "USA",
-    state == "Distrito Federal" ~ "China",
-    state == "Espírito Santo" ~ "USA",
-    state == "Goiás" ~ "China",
-    state == "Maranhão" ~ "Canada",
-    state == "Mato Grosso" ~ "China",
-    state == "Mato Grosso do Sul" ~ "China",
-    state == "Minas Gerais" ~ "China",
-    state == "Pará" ~ "China",
-    state == "Paraíba" ~ "USA",
-    state == "Paraná" ~ "China",
-    state == "Pernambuco" ~ "Argentina",
-    state == "Piauí" ~ "China",
-    state == "Rio de Janeiro" ~ "China",
-    state == "Rio Grande do Norte" ~"USA",
-    state == "Rio Grande do Sul" ~ "China",
-    state == "Rondônia" ~ "Hong Kong",
-    state == "Roraima" ~ "Venezuela",
-    state == "Santa Catarina" ~ "USA",
-    state == "São Paulo" ~ "USA",
-    state == "Sergipe" ~ "Netherlands",
-    TRUE ~ "China"
-    ),
-    flag = case_when(
-      partner == "China" ~ "cn.png",
-      partner == "USA" ~ "us.png",
-      partner == "Argentina" ~ "ar.png",
-      partner == "Netherlands" ~ "nl.png",
-      partner == "Venezuela" ~ "ve.png",
-      partner == "Canada" ~ "ca.png",
-      partner == "Peru" ~ "pe.png",
-      TRUE ~ "hk.png"
-    ))
+  partner = NA_character_) %>% 
+  mutate(state = stri_trans_general(state, "Latin-ASCII"),
+         partner = case_when(
+          state == "Acre" ~ "Peru",
+          state == "Alagoas" ~ "China",
+          state == "Amapa" ~ "United States of America",
+          state == "Amazonas" ~ "Argentina",
+          state == "Bahia" ~ "China",
+          state == "Ceara" ~ "United States of America",
+          state == "Distrito Federal" ~ "China",
+          state == "Espirito Santo" ~ "United States of America",
+          state == "Goias" ~ "China",
+          state == "Maranhao" ~ "Canada",
+          state == "Mato Grosso" ~ "China",
+          state == "Mato Grosso do Sul" ~ "China",
+          state == "Minas Gerais" ~ "China",
+          state == "Para" ~ "China",
+          state == "Paraiba" ~ "United States of America",
+          state == "Parana" ~ "China",
+          state == "Pernambuco" ~ "Argentina",
+          state == "Piaui" ~ "China",
+          state == "Rio de Janeiro" ~ "China",
+          state == "Rio Grande do Norte" ~ "United States of America",
+          state == "Rio Grande do Sul" ~ "China",
+          state == "Rondonia" ~ "Hong Kong",
+          state == "Roraima" ~ "Venezuela",
+          state == "Santa Catarina" ~ "United States of America",
+          state == "Sao Paulo" ~ "United States of America",
+          state == "Sergipe" ~ "Netherlands",
+          TRUE ~ "China"
+          ))
 
-for(i in 1:27){
-  trade$flag_image[[i]] <- readPNG(source = trade$flag[[i]])
-}
-
-br <- select(br, state, geometry)
-brazil <- full_join(trade, br)
-flag_fillr_data(brazil, type = "state")
+flag_fillr_data(trade, country = "Brazil", partner_col = trade$partner, state_col = trade$state, type = "state", resolution = "large", size = "250")
 ```
 
 Ok...it depends on some knowledge of flags, but look! They're so purty. And, I mean, just look at Africa...
@@ -107,9 +90,17 @@ Ok...it depends on some knowledge of flags, but look! They're so purty. And, I m
 
 That's pure unadulterated awesome-sauce, right there. 
 
+<br> 
+### Using flagfillr
+quick example: flag_fillr_continent("Asia")
+beautiful: (mexico flag)
+
+main reason is to use it with data
+
 So in the (un)likely event you find yourself pining for flags in a ggplot2 map, flagfillr has got you covered.
 
 <br>
+
 This package is designed to be quick and easy to use. As such, it's not sooo flexible. If you'd like to use your own data, or mess around with things, I recommend taking a look at the .R files, I hope they're reasonably easy to understand. Then you can hack away to your heart's content. The logic is simple: import the flags using `readPNG()`, establish the boundaries of the geometry, filter the flag *into* the geometry shape, use that as a fill. 
 
 <br>
@@ -150,3 +141,7 @@ https://en.wikipedia.org/wiki/List_of_Argentine_flags (argentina)
 
 ## related
 https://github.com/emphaticpuma/webflags
+
+
+## to do
+- remove islands or far away territories
