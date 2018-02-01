@@ -2,7 +2,7 @@
 #' @description \code{flag_fillr_data} uses user-supplied data to get flags as a fill for a map of a
 #' particular country.
 #' @param data
-#' @param country
+#' @param country if country is NULL, you must have country_col
 #' @param partner_col
 #' @details This function accepts a data.frame that must contain at least two columns: one for
 #' the base territory (i.e. the area that will be mapped), and another for the names of the countries
@@ -33,18 +33,25 @@ flag_fillr_data <- function(data = NULL, country = NULL,
                             type = c("country", "state"),
                             size = c("100", "250", "1000"),
                             state_col = NULL,
-                            country_col = NULL){
+                            country_col = NULL,
+                            mainland_only = TRUE){
 
   res <- match.arg(resolution, choices = c("small", "large"))
   type <- match.arg(type, choices = c("country", "state"))
   pixels <- match.arg(size, choices = c("100", "250", "1000"))
   kols <- colnames(data) %>% tolower()
+  if(!is.null(country)){
+    country <- country
+    if(country == "United States" | country == "US" | country == "USA"){
+      country <- "United States of America"
+    }
+  } else{
+    country <- country_col
+  }
 
-  # idea: use flags of countries inside states of a country
-  # or flags of other countries in a country
-  # have to specify country (territory for the map) {country}{type -- fill a country's states or a country?}
-  # have to specify which flags get used {partner}{iso?}
-  # res, size
+  # idea: use flags of countries inside states of a country -- type "state"
+  # or a flag of another country in a country -- type country
+  # or flags of other countries inside various countries - type country
 
   # checks
   if(is.null(data)){
@@ -54,14 +61,13 @@ flag_fillr_data <- function(data = NULL, country = NULL,
     available <- dir("state-flags/") %>% gsub("flags", "", .) %>%
       gsub("-", " ", .) %>% trimws()
     country <- tolower(country)
-    if(!country %in% available){
+    x <- ifelse(!country %in% available, 1,country)
+    if(x == 1){
       stop("Flags for this country are not available yet. If the country does indeed have lower-level flags, please feel free to contribute a folder of the images to the repo of this project at github.com/RobertMyles/flagfillr.")
+      }
     }
-  }
-
-
-  if(is.null(country)){
-    stop("Need to specify a country! Where are we going to plot this thing? The moon?")
+  if(is.null(country) & is.null(country_col)){
+    stop("Need to specify a country! Where are we going to plot this thing? The moon?\n  You can use `country` or `country_col` to avoid seeing this annoying message.")
   }
   if(is.null(partner_col) & !TRUE %in% !grepl("partner", kols)){
     stop("Need a partner...grab 'em by the hand")
@@ -79,7 +85,6 @@ flag_fillr_data <- function(data = NULL, country = NULL,
   } else{
     partner <- partner_col %>% tolower()
   }
-
   if(type == "state" & !is.null(state_col)){
     state <- state_col %>% tolower()
   } else if(type == "state" & is.null(state_col)){
@@ -88,132 +93,90 @@ flag_fillr_data <- function(data = NULL, country = NULL,
 
   # get data:
   if(type == "country"){
-    flags_dir <- dir(paste0("country-flags/png", pixels, "px/"))
     if(res == "small"){
       df <- rnaturalearth::countries110 %>%
         st_as_sf() %>% as_data_frame() %>%
-        select(country = admin, iso = iso_a2, geometry) %>%
-        mutate(country = tolower(country), iso = tolower(iso)) %>%
+        select(country = admin, geometry) %>%
+        mutate(country = tolower(country)) %>%
         dplyr::filter(country == UQ(country))
+
+      df_partner <- rnaturalearth::countries110 %>%
+        st_as_sf() %>% as_data_frame() %>%
+        select(partner = admin, iso = iso_a2) %>%
+        mutate(partner = tolower(partner), iso = tolower(iso)) %>%
+        dplyr::filter(partner %in% UQ(partner))
     } else{
       df <- rnaturalearthhires::countries10 %>%
         st_as_sf() %>% as_data_frame() %>%
-        select(country = ADMIN, iso = ISO_A2, geometry) %>%
-        mutate(country = tolower(country), iso = tolower(iso)) %>%
+        select(country = ADMIN, geometry) %>%
+        mutate(country = tolower(country)) %>%
         dplyr::filter(country == UQ(country))
+
+      df_partner <- rnaturalearthhires::countries10 %>%
+        st_as_sf() %>% as_data_frame() %>%
+        select(partner = ADMIN, iso = ISO_A2) %>%
+        mutate(partner = tolower(partner), iso = tolower(iso)) %>%
+        dplyr::filter(partner %in% UQ(partner))
     }
-  } else{
-    flags_dir <- dir(paste0("state-flags/", country, "-flags/"))
+  } else if (type =="state"){
     df <- rnaturalearthhires::states10 %>%
       st_as_sf() %>% as_data_frame() %>%
       select(country = admin, state = name, geometry) %>%
-      mutate(country = tolower(country), state = tolower(state),
-             iso = tolower(iso)) %>%
+      mutate(country = tolower(country), state = tolower(state)) %>%
       dplyr::filter(country == UQ(country))
+
+    df_partner <- rnaturalearth::countries110 %>%
+      st_as_sf() %>% as_data_frame() %>%
+      select(partner = admin, iso = iso_a2) %>%
+      mutate(partner = tolower(partner), iso = tolower(iso)) %>%
+      dplyr::filter(partner %in% UQ(partner))
   }
 
+  if(country == "netherlands" & mainland_only == TRUE){
+    df <- df %>%
+      dplyr::filter(!state %in% c("saba", "st. eustatius"))
+  }
+  if("hong kong" %in% partner){
+    df_partner <- df_partner %>%
+      add_row(partner = "hong kong", iso = "hk")
+  }
   # get flags:
+  flags_dir <- dir(paste0("country-flags/png", pixels, "px/"))
   iso_list <- flags_dir %>% gsub("\\.png", '', .) %>%
-    .[which(. %in% df$iso)] %>%
+    .[which(. %in% df_partner$iso)] %>%
     as_data_frame() %>%
     rename(iso = value) %>% pull()
 
-  df <- df %>% dplyr::filter(iso %in% iso_list) %>%
+  df_partner <- df_partner %>% dplyr::filter(iso %in% iso_list) %>%
+    mutate_all(stri_trans_general, "Latin-ASCII") %>%
     mutate(flag_image = list(array(NA, c(1, 1, 3))))
 
-  flags <- paste0(df$iso, ".png")
-  if(type == "country"){
-    flags <- paste0("country-flags/png", pixels, "px/", flags)
+  data <- data %>% mutate_all(tolower) %>%
+    mutate_all(stri_trans_general, "Latin-ASCII")
+
+  if(type=="state"){
+    suppressMessages(df <- df %>%
+                       dplyr::filter(!is.na(state)) %>%
+                       mutate_at(.vars = c("state", "country"), stri_trans_general, "Latin-ASCII") %>%
+                       full_join(data) %>%
+                       full_join(df_partner))
   } else{
-    flags <- paste0("state-flags/", country, "-flags/")
+    suppressMessages(df <- df %>%
+                       mutate_at(.vars = c("country"), stri_trans_general, "Latin-ASCII") %>%
+                       full_join(data) %>%
+                       full_join(df_partner))
   }
+
+
+  flags <- paste0(df$iso, ".png")
+  flags <- paste0("country-flags/png", pixels, "px/", flags)
 
   for(i in 1:nrow(df)){
     df$flag_image[[i]] <- readPNG(source = flags[[i]])
   }
+  if(country == "united states of america" & mainland_only == TRUE){
+    df <- dplyr::filter(df, !state %in% c("hawaii", "district of columbia", "alaska"))
+  }
+  df <- df %>% st_as_sf()
   finalize(df)
-
-
-  #   df_partner <- df %>% st_as_sf() %>% as_data_frame() %>%
-  #     dplyr::select(name, iso = iso_a2) %>%
-  #     mutate(name = tolower(name)) %>%
-  #     dplyr::filter(name %in% partner) %>%
-  #     mutate(iso = tolower(iso)) %>%
-  #     select(partner = name, iso_partner = iso)
-
-
-  #
-  #   suppressMessages(
-  #     DF <- full_join(df_main, df_user, by = c("name" = "countries")) %>%
-  #       as_data_frame() %>%
-  #       full_join(df_partner) %>% st_as_sf()
-  #   )
-  #
-  #   # flags based on iso_partner:
-  #   flags_dir <- dir(paste0(type, "-flags/png", pixels, "px/"))
-  #   country_list <- flags_dir %>% gsub("\\.png", '', .) %>%
-  #     .[which(. %in% DF$iso_partner)] %>%
-  #     as_data_frame() %>%
-  #     rename(iso = value)
-  #   DF <- suppressMessages(
-  #     left_join(DF, country_list) %>%
-  #       mutate(flag_image = list(array(NA, c(1, 1, 3))))
-  #   )
-  #   flags <- paste0(DF$iso_partner, ".png")
-  #   flags <- paste0(type, "-flags/png", pixels, "px/", flags)
-  #   for(i in 1:nrow(DF)){
-  #     DF$flag_image[[i]] <- readPNG(source = flags[[i]])
-  #   }
-  #   finalize(DF)
-  #
-  # } else if(!is.null(state_col)){
-  #   type <- "state"
-  #   states <- state_col
-  #
-  #   country <- tolower(country)
-  #   states <- tolower(states) %>% gsub(" ", "_", .)
-  #   states <- cbind(states, partner) %>% as_data_frame()
-  #
-  #   DF <-  %>% sf::st_as_sf() %>%
-  #     dplyr::mutate(admin = tolower(admin), name = tolower(name),
-  #                   iso_a2 = tolower(iso_a2))
-  #   suppressMessages(
-  #     df_partner <- DF %>% as_data_frame() %>%
-  #       dplyr::select(admin, iso_a2) %>%
-  #       dplyr::filter(admin %in% partner) %>%
-  #       dplyr::select(partner = admin, iso= iso_a2) %>%
-  #       distinct(partner, .keep_all = TRUE) %>%
-  #       full_join(states)
-  #   )
-  #
-  #   df_states <-  DF %>%
-  #     dplyr::mutate(name = stringi::stri_trans_general(name, "Latin-ASCII"),
-  #                   name = gsub(" ", "_", name)) %>%
-  #     dplyr::filter(name %in% tolower(state_col), admin == country) %>%
-  #     dplyr::select(country = admin, name, geometry) %>% as_data_frame()
-  #
-  #   suppressMessages(df <- full_join(df_states, df_partner, by = c("name" = "states")))
-  #   df <- df %>% st_as_sf()
-  #
-  #   # flags based on iso_partner:
-  #   flags_dir <- dir(paste0("country-flags/png", size, "px/"))
-  #   country_list <- flags_dir %>% gsub("\\.png", '', .) %>%
-  #     .[which(. %in% df$iso)] %>%
-  #     as_data_frame() %>%
-  #     rename(iso = value)
-  #   df <- suppressMessages(
-  #     left_join(df, country_list) %>%
-  #       mutate(flag_image = list(array(NA, c(1, 1, 3)))) %>%
-  #       as_data_frame() %>% sf::st_as_sf()
-  #   )
-  #   flags <- paste0(df$iso, ".png")
-  #   flags <- paste0("country-flags/png", pixels, "px/", flags)
-  #   for(i in 1:nrow(df)){
-  #     df$flag_image[[i]] <- readPNG(source = flags[[i]])
-  #   }
-  #   finalize(df)
-  # }
-#}
 }
-
-

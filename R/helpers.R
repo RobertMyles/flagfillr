@@ -7,7 +7,7 @@ country_list_states <- function(){
   rnaturalearthhires::states10 %>% st_as_sf() %>% pull(country) %>% unique() %>% sort()
 }
 
-# filter flags, check they match up with data iso codes:
+
 flag_filter <- function(flags_dir, data){
   flags_dir %>% gsub("\\.png", '', .) %>%
     .[which(. %in% data$iso)] %>%
@@ -15,9 +15,8 @@ flag_filter <- function(flags_dir, data){
     rename(iso = value)
 }
 
-# read PNGS
 png_readr <- function(data, country, type, pixels){
-  
+
   if(type == "country"){
     flags <- paste0(data$iso, ".png")
     flags <- paste0(type, "-flags/png", pixels, "px/", flags)
@@ -29,13 +28,6 @@ png_readr <- function(data, country, type, pixels){
     data$flag_image[[i]] <- readPNG(source = flags[[i]])
   }
   return(data)
-}
-
-finalize <- function(data){
-  output <- flag_fillr(data)
-  message("Combining flags and data...\n")
-  message("Creating plot...")
-  flag_plotr(output)
 }
 
 messager <- function(res, pixels){
@@ -57,4 +49,11 @@ process <- function(data, size, res, flags_dir, type, country){
   )
   data <- png_readr(data, country, type = type, pixels)
   return(data)
+}
+
+finalize <- function(data){
+  output <- flag_fillr(data)
+  message("Combining flags and data...\n")
+  message("Creating plot...")
+  flag_plotr(output)
 }

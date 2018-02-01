@@ -7,7 +7,8 @@
 flag_plotr <- function(df){
   # thanks to Julio Trecenti for the help!
   p <- ggplot()
-  df_list <- unique(df$name)
+  #df_list <- unique(df$name)
+  df_list <- 1:nrow(df)
 
   for (i in seq_along(df_list)){
     DF <- df$plot_image[[i]]

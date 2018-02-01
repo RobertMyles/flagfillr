@@ -6,7 +6,11 @@
 \usage{
 flag_fillr_data(data = NULL, country = NULL, partner_col = NULL,
   resolution = c("small", "large"), type = c("country", "state"),
-  size = c("100", "250", "1000"), state_col = NULL, country_col = NULL)
+  size = c("100", "250", "1000"), state_col = NULL, country_col = NULL,
+  remove_oultiers = TRUE)
+}
+\arguments{
+\item{country}{if country is NULL, you must have country_col}
 }
 \description{
 \code{flag_fillr_data} uses user-supplied data to get flags as a fill for a map of a

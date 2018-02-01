@@ -12,6 +12,7 @@
 #' @importFrom dplyr bind_rows
 #' @importFrom dplyr filter
 #' @importFrom rlang UQ
+#' @importFrom rlang UQS
 #' @importFrom png readPNG
 #' @importFrom purrr map
 #' @importFrom purrr map_dbl
@@ -60,7 +61,7 @@ get_country_data <- function(country, res){
     data <- rnaturalearthhires::countries10 %>% sf::st_as_sf() %>%
       dplyr::select(name = NAME, iso = ISO_A2, geometry)
   }
-  data <- data %>% 
+  data <- data %>%
     mutate(name = tolower(name)) %>%
     dplyr::filter(name == UQ(country)) %>%
     mutate(iso = tolower(iso))
