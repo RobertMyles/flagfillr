@@ -17,7 +17,7 @@
 #' flag_fillr_data()
 #' }
 #' @export
-flag_fillr_data <- function(data = NULL, country = NULL, # take out country?
+flag_fillr_data <- function(data = NULL, country = NULL, 
                             partner_col = NULL, iso_codes = NULL,
                             resolution = c("small", "large"),
                             type = c("country", "state"),
@@ -29,6 +29,7 @@ flag_fillr_data <- function(data = NULL, country = NULL, # take out country?
   type <- match.arg(type, choices = c("country", "state"))
   pixels <- match.arg(size, choices = c("100", "250", "1000"))
   kols <- colnames(data) %>% tolower()
+  country <- country %>% tolower()
   
   # idea: use flags of countries inside states of a country
   # or flags of other countries in a country
@@ -43,12 +44,12 @@ flag_fillr_data <- function(data = NULL, country = NULL, # take out country?
   if(is.null(country)){
     stop("Need to specify a country! Where are we going to plot this thing? The moon?")
   }
-  if(is.null(partner_col) && !grepl("partner", kols)){
+  if(is.null(partner_col) & !TRUE %in% !grepl("partner", kols)){
     stop("Need a partner...grab 'em by the hand")
   }
-  if(type == "state" && is.null(state_col) && !grepl("state", kols)){
+  if(type == "state" & is.null(state_col) & !TRUE %in% grepl("state", kols)){
     stop("Missing a column of states. YOU LOSE!")
-  } else if(type == "country" && is.null(country_col) && !grepl("country", kols)){
+  } else if(type == "country" & is.null(country_col) & !TRUE %in% grepl("country", kols)){
     stop("Missing a country column...")
   }
   
