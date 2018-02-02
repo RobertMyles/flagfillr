@@ -3,7 +3,8 @@
 #' particular country.
 #' @param country \code{character}. For a list of countries, run
 #' \code{country_list_states()} in the R console. (This extra function is needed
-#' due to inconsistencies in the country names across rnaturalearth.) See notes.
+#' due to inconsistencies in the country names across rnaturalearth.) For the USA, you can
+#' use the full name or 'us'/'usa'. See notes.
 #' @param mainland_only filter out far-flung territories from the data?
 #' @note Not all countries currently have flags available in the package, or will ever have, since
 #' many don't have lower-administrative-level flags. Check the 'state-flags' folder on the github
@@ -66,6 +67,5 @@ get_states_data <- function(country){
     mutate(country = tolower(country), name = tolower(name)) %>%
     dplyr::filter(country == UQ(country), !is.na(name)) %>%
     mutate(name = stringi::stri_trans_general(name, "Latin-ASCII"),
-           name = gsub(" ", "_", name))#,
-           #flag_image = list(array(NA, c(1, 1, 3))))
+           name = gsub(" ", "_", name))
 }

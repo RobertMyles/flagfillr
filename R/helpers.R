@@ -20,7 +20,6 @@ flag_filter <- function(flags_dir, data){
 }
 
 
-
 flag_loader <- function(pixels){
 
   if(pixels == "100") x <- get(data("flag_list_100px"))
@@ -53,7 +52,6 @@ flag_loader_states <- function(country){
 
 png_readr <- function(country, pixels, type){
 
-  ## flags don't match up, need to do user_data as well
   if(type == "country"){
     x <- flag_loader(pixels)
   } else{
@@ -72,14 +70,16 @@ messager <- function(res, pixels){
 
 process <- function(data, size, res, flags_dir, type, country){
   pixels <- match.arg(size, choices = c("100", "250", "1000"))
-  flags_dir <- dir(paste0(type, "-flags/png", pixels, "px/"))
+  flag_image <- png_readr(country, pixels, type)
+  flag_filterz <- gsub("\\.png", "", names(flag_image))
   messager(res, pixels)
-  country_list <- flag_filter(flags_dir, data)
-  data <- suppressMessages(
-    left_join(data, country_list) %>%
-      mutate(flag_image = list(array(NA, c(1, 1, 3))))
+  flagz <- dplyr::data_frame(
+    country = country,
+    name = flag_filterz,
+    flag_image = flag_image
   )
-  data$flag_image <- png_readr(data, country, pixels)
+  data <- data %>% dplyr::filter(name %in% flag_filterz)
+  suppressMessages(data <- full_join(data, flagz) %>% st_as_sf())
 
   return(data)
 }

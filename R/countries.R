@@ -48,13 +48,23 @@
 #' @param resolution detail of rnaturalearth data.
 #' @param size size of flag image.
 #' @export
-flag_fillr_country <- function(country = "", resolution = c("small", "large"),
+flag_fillr_country <- function(country = NULL, resolution = c("small", "large"),
                                size = c("100", "250", "1000")){
   country <- tolower(country)
   res <- match.arg(resolution, choices = c("small", "large"))
   pixels <- match.arg(size, choices = c("100", "250", "1000"))
   data <- get_country_data(country, res)
-  data <- process(data, size, res, flags_dir, type = "country")
+  pixels <- match.arg(size, choices = c("100", "250", "1000"))
+  flag_image <- png_readr(country, pixels, type = "country")
+  flag_filterz <- gsub("\\.png", "", names(flag_image))
+  messager(res, pixels)
+  Iso <- data$iso
+  flagz <- dplyr::data_frame(
+    country = country,
+    iso = flag_filterz,
+    flag_image = flag_image
+  ) %>% dplyr::filter(iso == Iso)
+  suppressMessages(data <- full_join(data, flagz) %>% st_as_sf())
   finalize(data)
 }
 

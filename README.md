@@ -157,5 +157,6 @@ to do
 -----
 
 -   create more repos of state flag pngs
--   clean up method of removing outliers
--   different projections
+-   clean up method of removing outliers (France!)
+-   different projections?
+-   remove data after it gets loaded automatically
