@@ -15,7 +15,11 @@ You can install flagfillr from github with:
 devtools::install_github("RobertMyles/flag_fillr")
 ```
 
-<br> **Important Note:** flagfillr works with ggplot2's `geom_sf()`, which is currently only available in the current development version of ggplot2 (version 2.2.1.9000).
+It's not on CRAN because it depends on development versions of some packages.
+
+<br>
+
+**Important Note:** flagfillr works with ggplot2's `geom_sf()`, which is currently only available in the current development version of ggplot2 (version 2.2.1.9000).
 
 Why? For the love of god, why??!!!
 ----------------------------------
