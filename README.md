@@ -56,7 +56,7 @@ And this:
 flag_fillr_continent("Asia")
 ```
 
-![](asia.png)
+![](Asia.png)
 
 And even this (¡Viva México!):
 
@@ -64,7 +64,7 @@ And even this (¡Viva México!):
 flag_fillr_country("Mexico")
 ```
 
-![](mexico.png)
+![](Mexico.png)
 
 **Be aware**: some of these can take some time to plot, especially at higher resolutions and larger sizes.
 
