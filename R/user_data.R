@@ -148,39 +148,33 @@ flag_fillr_data <- function(data = NULL, country = NULL,
       add_row(partner = "hong kong", iso = "hk")
   }
   # get flags:
-  flags_dir <- dir(paste0("country-flags/png", pixels, "px/"))
-  iso_list <- flags_dir %>% gsub("\\.png", '', .) %>%
-    .[which(. %in% df_partner$iso)] %>%
-    as_data_frame() %>%
-    rename(iso = value) %>% pull()
+  flag_image <- png_readr(country, pixels, type = "country") ## need to get partners
+  flag_filterz <- gsub("\\.png", "", names(flag_image))
+  messager(res, pixels)
+  isos <- df_partner$iso
+  flagz <- dplyr::data_frame(
+    country = country,
+    iso = flag_filterz,
+    flag_image = flag_image
+  ) %>% dplyr::filter(iso %in% isos)
 
-  df_partner <- df_partner %>% dplyr::filter(iso %in% iso_list) %>%
-    mutate_all(stri_trans_general, "Latin-ASCII") %>%
-    mutate(flag_image = list(array(NA, c(1, 1, 3))))
-
+  suppressMessages(df_partner <- full_join(df_partner, flagz))
   data <- data %>% mutate_all(tolower) %>%
     mutate_all(stri_trans_general, "Latin-ASCII")
+  suppressMessages(data <- full_join(data, df_partner))
 
   if(type=="state"){
     suppressMessages(df <- df %>%
                        dplyr::filter(!is.na(state)) %>%
                        mutate_at(.vars = c("state", "country"), stri_trans_general, "Latin-ASCII") %>%
-                       full_join(data) %>%
-                       full_join(df_partner))
+                       full_join(data))
   } else{
     suppressMessages(df <- df %>%
                        mutate_at(.vars = c("country"), stri_trans_general, "Latin-ASCII") %>%
-                       full_join(data) %>%
-                       full_join(df_partner))
+                       full_join(data))
   }
 
 
-  flags <- paste0(df$iso, ".png")
-  flags <- paste0("country-flags/png", pixels, "px/", flags)
-
-  for(i in 1:nrow(df)){
-    df$flag_image[[i]] <- readPNG(source = flags[[i]])
-  }
   if(country == "united states of america" & mainland_only == TRUE){
     df <- dplyr::filter(df, !state %in% c("hawaii", "district of columbia", "alaska"))
   }
