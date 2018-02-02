@@ -14,15 +14,26 @@
 #' }
 #' @export
 flag_fillr_states <- function(country = NULL, mainland_only = TRUE){
-
+  pixels <- ""
   country <- tolower(country)
-  country2 <- gsub(" ", "-", country)
-  flags_dir <- dir(paste0("state-flags/", country2, "-flags/"))
+  if(country == "united states" | country == "us" | country == "usa"){
+    country <- "united states of america"
+  }
   data <- get_states_data(country)
 
   # some tidying up:
   if(mainland_only == TRUE){
     # d3 with projections has a better way of doing this
+
+    flag_image <- png_readr(country, pixels, type = "state")
+    flag_filterz <- gsub("\\.png", "", names(flag_image))
+    flagz <- dplyr::data_frame(
+      country = country,
+      name = flag_filterz,
+      flag_image = flag_image
+    )
+    data <- data %>% dplyr::filter(name %in% flag_filterz)
+    suppressMessages(data <- full_join(data, flagz) %>% st_as_sf())
     if(country == "united states of america"){
       data <- data %>%
         dplyr::filter(!name %in% c("district_of_columbia", "alaska", "hawaii"))
@@ -32,14 +43,17 @@ flag_fillr_states <- function(country = NULL, mainland_only = TRUE){
         dplyr::filter(!name %in% c("saba", "st._eustatius"))
     }
 
-    flag_filterz <- gsub("\\.png", "", flags_dir)
-    data <- data %>% dplyr::filter(name %in% flag_filterz)
-    data <- png_readr(data, type = "state", country)
     finalize(data)
   } else{
-    flag_filterz <- gsub("\\.png", "", flags_dir)
+    flag_image <- png_readr(country, pixels, type = "state")
+    flag_filterz <- gsub("\\.png", "", names(flag_image))
+    flagz <- dplyr::data_frame(
+      country = country,
+      name = flag_filterz,
+      flag_image = flag_image
+    )
     data <- data %>% dplyr::filter(name %in% flag_filterz)
-    data <- png_readr(data, type = "state", country)
+    suppressMessages(data <- full_join(data, flagz) %>% st_as_sf())
     finalize(data)
   }
 
@@ -52,6 +66,6 @@ get_states_data <- function(country){
     mutate(country = tolower(country), name = tolower(name)) %>%
     dplyr::filter(country == UQ(country), !is.na(name)) %>%
     mutate(name = stringi::stri_trans_general(name, "Latin-ASCII"),
-           name = gsub(" ", "_", name),
-           flag_image = list(array(NA, c(1, 1, 3))))
+           name = gsub(" ", "_", name))#,
+           #flag_image = list(array(NA, c(1, 1, 3))))
 }

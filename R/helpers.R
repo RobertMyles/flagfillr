@@ -19,23 +19,47 @@ flag_filter <- function(flags_dir, data){
     rename(iso = value)
 }
 
-png_readr <- function(data, country, type, pixels){
-
-  #system.file("extdata", "response.json", package = "mypackage")
 
 
-  if(type == "country"){
-    flags <- paste0(data$iso, ".png")
-    flags <- paste0(type, "-flags/png", pixels, "px/", flags)
+flag_loader <- function(pixels){
+
+  if(pixels == "100") x <- get(data("flag_list_100px"))
+  if(pixels == "250") x <- get(data("flag_list_250px"))
+  return(x)
+  #if(pixels == "1000") load("flag_list_1000px.rda")  too big :-(
+}
+
+flag_loader_states <- function(country){
+  country <- gsub(" ", "-", country)
+  if(country == "argentina"){
+    x <- get(data("flag_list_argentina"))
+  } else if(country == "australia"){
+    x <- get(data("flag_list_australia"))
+  } else if(country == "brazil"){
+    x <- get(data("flag_list_brazil"))
+  } else if(country == "canada"){
+    x <- get(data("flag_list_canada"))
+  } else if(country == "germany"){
+    x <- get(data("flag_list_germany"))
+  } else if(country == "netherlands"){
+    x <- get(data("flag_list_netherlands"))
+  } else if(country == "united-states-of-america"){
+    x <- get(data("flag_list_united_states_of_america"))
   } else{
-    country <- gsub(" ", "-", country)
-    flags <- paste0(data$name, ".png")
-    flags <- paste0(type, "-flags/", country, "-flags/", flags)
+    stop("Lower-level flags not available for this country.")
   }
-  for(i in 1:nrow(data)){
-    data$flag_image[[i]] <- readPNG(source = flags[[i]])
+  return(x)
+}
+
+png_readr <- function(country, pixels, type){
+
+  ## flags don't match up, need to do user_data as well
+  if(type == "country"){
+    x <- flag_loader(pixels)
+  } else{
+    x <- flag_loader_states(country)
   }
-  return(data)
+  return(x)
 }
 
 messager <- function(res, pixels){
@@ -55,7 +79,8 @@ process <- function(data, size, res, flags_dir, type, country){
     left_join(data, country_list) %>%
       mutate(flag_image = list(array(NA, c(1, 1, 3))))
   )
-  data <- png_readr(data, country, type = type, pixels)
+  data$flag_image <- png_readr(data, country, pixels)
+
   return(data)
 }
 

@@ -25,7 +25,7 @@ You can install flagfillr from github with:
 devtools::install_github("RobertMyles/flag_fillr")
 ```
 
-It's not on CRAN because it depends on development versions of some packages. 
+It's not on CRAN because it depends on development versions of some packages, and because the size of the 1000px flags renders it difficult for CRAN to accept. So it'll probably never be on CRAN, but hey, that's OK. 
 
 <br>
 
