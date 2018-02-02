@@ -21,6 +21,9 @@ flag_filter <- function(flags_dir, data){
 
 png_readr <- function(data, country, type, pixels){
 
+  #system.file("extdata", "response.json", package = "mypackage")
+
+
   if(type == "country"){
     flags <- paste0(data$iso, ".png")
     flags <- paste0(type, "-flags/png", pixels, "px/", flags)
