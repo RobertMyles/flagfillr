@@ -65,8 +65,8 @@ flag_fillr_data <- function(data = NULL, country = NULL,
     stop("Need data!")
   }
   if(type == "state"){
-    available <- dir("state-flags/") %>% gsub("flags", "", .) %>%
-      gsub("-", " ", .) %>% trimws()
+    available <- c("argentina", "australia", "brazil", "canada", "germany", "netherlands",
+                   "united states of america")
     country <- tolower(country)
     x <- ifelse(!country %in% available, 1,country)
     if(x == 1){
