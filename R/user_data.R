@@ -25,12 +25,14 @@
 #' \code{state} is the 'state' column (with whatever name you have for it). For
 #' information on acceptable country names, see \code{country_list()}.
 #' @examples
-#'us_data <- data.frame(
-#'  state = state.name, # I love R!
-#'  partner = c(rep("Mexico", 15), rep("Canada", 25), rep("China", 8), rep("Japan", 2)),
-#'  stringsAsFactors = FALSE
-#'  )
-#' flag_fillr_data(us_data, country = "United States of America", type = "state", size = "250")
+#' \dontrun{
+#'  us_data <- data.frame(
+#'    state = state.name, # I love R!
+#'    partner = c(rep("Mexico", 15), rep("Canada", 25), rep("China", 8), rep("Japan", 2)),
+#'    stringsAsFactors = FALSE
+#'   )
+#'   flag_fillr_data(us_data, country = "United States of America", type = "state", size = "250")
+#' }
 #' @export
 flag_fillr_data <- function(data = NULL, country = NULL,
                             partner_col = NULL,
