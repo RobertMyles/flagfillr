@@ -30,7 +30,7 @@
 #'  partner = c(rep("Mexico", 15), rep("Canada", 25), rep("China", 8), rep("Japan", 2)),
 #'  stringsAsFactors = FALSE
 #'  )
-#' flag_fillr_data(us_data, country = "United States of America", size = "250")
+#' flag_fillr_data(us_data, country = "United States of America", type = "state", size = "250")
 #' @export
 flag_fillr_data <- function(data = NULL, country = NULL,
                             partner_col = NULL,

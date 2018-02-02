@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-flagfillr \[WIP\]
-=================
+flagfillr
+=========
 
 flagfillr is a little package for R that makes it easier to use flags as fills (i.e. backgrounds) for [ggplot2](https://github.com/tidyverse/ggplot2) maps.
 
@@ -49,14 +49,6 @@ flag_fillr_states("United States of America")
 ```
 
 ![](us_states.png)
-
-And this:
-
-``` r
-flag_fillr_states("Argentina")
-```
-
-![](argentina.png)
 
 And this:
 

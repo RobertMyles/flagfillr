@@ -15,3 +15,6 @@ flag_fillr_country(country = "", resolution = c("small", "large"),
 
 \item{size}{size of flag image.}
 }
+\description{
+Plot a map of a country using flags as fills.
+}

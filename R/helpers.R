@@ -1,9 +1,11 @@
 #' @title list of countries for flagfillr functions
+#' @description Returns a list of suitable countries.
 #' @export
 country_list <- function(){
   rnaturalearth::countries110 %>% st_as_sf() %>% pull(name) %>% unique() %>% sort()
 }
 #' @title list of countries for flag_fillr_state() function
+#' @description Returns a list of suitable countries.
 #' @export
 country_list_states <- function(){
   rnaturalearthhires::states10 %>% st_as_sf() %>% pull(country) %>% unique() %>% sort()

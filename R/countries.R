@@ -10,6 +10,8 @@
 #' @importFrom dplyr group_by
 #' @importFrom dplyr pull
 #' @importFrom dplyr bind_rows
+#' @importFrom dplyr mutate_all
+#' @importFrom dplyr mutate_at
 #' @importFrom dplyr filter
 #' @importFrom rlang UQ
 #' @importFrom grDevices rgb
@@ -40,6 +42,7 @@
 #' @importFrom ggplot2 element_line
 #' @importFrom stringi stri_trans_general
 #' @title Use flags as a fill argument in a ggplot2 map
+#' @description Plot a map of a country using flags as fills.
 #' @param country \code{character}. For a list of countries, run
 #'  \code{country_list()} in the R console.
 #' @param resolution detail of rnaturalearth data.

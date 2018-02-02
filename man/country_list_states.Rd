@@ -6,3 +6,6 @@
 \usage{
 country_list_states()
 }
+\description{
+Returns a list of suitable countries.
+}
