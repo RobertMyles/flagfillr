@@ -1,7 +1,7 @@
 #' @author Robert Myles McDonnell, \email{robertmylesmcdonnell@gmail.com}
-#' @title Use flags as a fill argument in a ggplot2 map
+#' @title Use flags to plot a ggplot2 map
 #' @description flagfillr is a small set of convenience functions for
-#' you to use flags as fills in a ggplot2 map.
+#' you to use flags as fills in a ggplot2 map. It will plot the map for you.
 #' @param continent (\code{character}). Data come from the rnaturalearth package.
 #' @param resolution resolution of rnaturalearth data.
 #' @param size size of png image.

@@ -2,7 +2,7 @@
 % Please edit documentation in R/user_data.R
 \name{flag_fillr_data}
 \alias{flag_fillr_data}
-\title{Use flags as a fill argument in a ggplot2 map}
+\title{Use flags to plot a ggplot2 map}
 \usage{
 flag_fillr_data(data = NULL, country = NULL, partner_col = NULL,
   resolution = c("small", "large"), type = c("country", "state"),
@@ -31,7 +31,7 @@ like Alaska, Hawaii, etc.}
 }
 \description{
 \code{flag_fillr_data} uses user-supplied data to get flags as a fill for a map of a
-particular country.
+particular country. It wil lplot the map for thee.
 }
 \details{
 This function accepts a data.frame that must contain at least two columns:

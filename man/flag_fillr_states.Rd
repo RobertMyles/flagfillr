@@ -2,14 +2,15 @@
 % Please edit documentation in R/states.R
 \name{flag_fillr_states}
 \alias{flag_fillr_states}
-\title{Use flags as a fill argument in a ggplot2 map}
+\title{Use flags as a fill to plot a ggplot2 map}
 \usage{
 flag_fillr_states(country = NULL, mainland_only = TRUE)
 }
 \arguments{
 \item{country}{\code{character}. For a list of countries, run
 \code{country_list_states()} in the R console. (This extra function is needed
-due to inconsistencies in the country names across rnaturalearth.) See notes.}
+due to inconsistencies in the country names across rnaturalearth.) For the USA, you can
+use the full name or 'us'/'usa'. See notes.}
 
 \item{mainland_only}{filter out far-flung territories from the data?}
 }

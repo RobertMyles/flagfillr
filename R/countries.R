@@ -41,7 +41,7 @@
 #' @importFrom ggplot2 element_blank
 #' @importFrom ggplot2 element_line
 #' @importFrom stringi stri_trans_general
-#' @title Use flags as a fill argument in a ggplot2 map
+#' @title Use flags to plot a ggplot2 map
 #' @description Plot a map of a country using flags as fills.
 #' @param country \code{character}. For a list of countries, run
 #'  \code{country_list()} in the R console.

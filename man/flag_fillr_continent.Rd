@@ -2,11 +2,11 @@
 % Please edit documentation in R/continents.R
 \name{flag_fillr_continent}
 \alias{flag_fillr_continent}
-\title{Use flags as a fill argument in a ggplot2 map}
+\title{Use flags to plot a ggplot2 map}
 \usage{
 flag_fillr_continent(continent = c("North America", "Asia", "Africa",
-  "Europe", "South America", "Oceania"), resolution = c("small", "large"),
-  size = c("100", "250", "1000"))
+  "Europe", "South America", "Oceania"), Europe_no_Russia = TRUE,
+  resolution = c("small", "large"), size = c("100", "250", "1000"))
 }
 \arguments{
 \item{continent}{(\code{character}). Data come from the rnaturalearth package.}
@@ -17,7 +17,7 @@ flag_fillr_continent(continent = c("North America", "Asia", "Africa",
 }
 \description{
 flagfillr is a small set of convenience functions for
-you to use flags as fills in a ggplot2 map.
+you to use flags as fills in a ggplot2 map. It will plot the map for you.
 }
 \examples{
 \dontrun{

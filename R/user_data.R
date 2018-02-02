@@ -1,6 +1,6 @@
-#' @title Use flags as a fill argument in a ggplot2 map
+#' @title Use flags to plot a ggplot2 map
 #' @description \code{flag_fillr_data} uses user-supplied data to get flags as a fill for a map of a
-#' particular country.
+#' particular country. It wil lplot the map for thee.
 #' @param data A \code{data.frame}, see details.
 #' @param country country name. If \code{country} is \code{NULL}, you must supply a \code{country_col}.
 #' @param partner_col column of partner countries. See details.

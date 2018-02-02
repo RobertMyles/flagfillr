@@ -1,4 +1,4 @@
-#' @title Use flags as a fill argument in a ggplot2 map
+#' @title Use flags as a fill to plot a ggplot2 map
 #' @description \code{flag_fillr_states} uses state-level flags as a fill for a
 #' particular country.
 #' @param country \code{character}. For a list of countries, run

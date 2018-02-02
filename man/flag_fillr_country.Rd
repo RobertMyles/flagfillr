@@ -2,9 +2,9 @@
 % Please edit documentation in R/countries.R
 \name{flag_fillr_country}
 \alias{flag_fillr_country}
-\title{Use flags as a fill argument in a ggplot2 map}
+\title{Use flags to plot a ggplot2 map}
 \usage{
-flag_fillr_country(country = "", resolution = c("small", "large"),
+flag_fillr_country(country = NULL, resolution = c("small", "large"),
   size = c("100", "250", "1000"))
 }
 \arguments{
