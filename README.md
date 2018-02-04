@@ -62,13 +62,15 @@ flag_fillr_continent("Asia")
 
 ![](Asia.png)
 
-And even this (Â¡Viva MÃ©xico!):
+And even this:
 
 ``` r
 flag_fillr_country("Mexico")
 ```
 
 ![](Mexico.png)
+
+Although I had to take out the 1000px resolution flags because of their size, so your Mexican flag won't look quite as amazing.
 
 **Be aware**: some of these can take some time to plot, especially at higher resolutions and larger sizes.
 

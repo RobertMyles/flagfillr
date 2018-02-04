@@ -11,7 +11,7 @@
 #' repo for this project (https://github.com/RobertMyles/flagfillr) to see what's currently available.
 #' @examples
 #' \dontrun{
-#' flag_fillr_states(country = "Brazil", resolution = "small", size = 250)
+#' flag_fillr_states(country = "Brazil")
 #' }
 #' @export
 flag_fillr_states <- function(country = NULL, mainland_only = TRUE){

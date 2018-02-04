@@ -6,7 +6,7 @@
 \usage{
 flag_fillr_data(data = NULL, country = NULL, partner_col = NULL,
   resolution = c("small", "large"), type = c("country", "state"),
-  size = c("100", "250", "1000"), state_col = NULL, country_col = NULL,
+  size = c("100", "250"), state_col = NULL, country_col = NULL,
   mainland_only = TRUE)
 }
 \arguments{

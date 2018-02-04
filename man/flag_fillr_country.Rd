@@ -5,7 +5,7 @@
 \title{Use flags to plot a ggplot2 map}
 \usage{
 flag_fillr_country(country = NULL, resolution = c("small", "large"),
-  size = c("100", "250", "1000"))
+  size = c("100", "250"))
 }
 \arguments{
 \item{country}{\code{character}. For a list of countries, run

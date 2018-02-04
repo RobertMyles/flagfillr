@@ -69,7 +69,7 @@ messager <- function(res, pixels){
 }
 
 process <- function(data, size, res, flags_dir, type, country){
-  pixels <- match.arg(size, choices = c("100", "250", "1000"))
+  pixels <- match.arg(size, choices = c("100", "250"))
   flag_image <- png_readr(country, pixels, type)
   flag_filterz <- gsub("\\.png", "", names(flag_image))
   messager(res, pixels)

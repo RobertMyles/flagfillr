@@ -25,6 +25,6 @@ repo for this project (https://github.com/RobertMyles/flagfillr) to see what's c
 }
 \examples{
 \dontrun{
-flag_fillr_states(country = "Brazil", resolution = "small", size = 250)
+flag_fillr_states(country = "Brazil")
 }
 }

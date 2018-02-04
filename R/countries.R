@@ -49,12 +49,11 @@
 #' @param size size of flag image.
 #' @export
 flag_fillr_country <- function(country = NULL, resolution = c("small", "large"),
-                               size = c("100", "250", "1000")){
+                               size = c("100", "250")){
   country <- tolower(country)
   res <- match.arg(resolution, choices = c("small", "large"))
-  pixels <- match.arg(size, choices = c("100", "250", "1000"))
+  pixels <- match.arg(size, choices = c("100", "250"))
   data <- get_country_data(country, res)
-  pixels <- match.arg(size, choices = c("100", "250", "1000"))
   flag_image <- png_readr(country, pixels, type = "country")
   flag_filterz <- gsub("\\.png", "", names(flag_image))
   messager(res, pixels)

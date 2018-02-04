@@ -38,14 +38,14 @@ flag_fillr_data <- function(data = NULL, country = NULL,
                             partner_col = NULL,
                             resolution = c("small", "large"),
                             type = c("country", "state"),
-                            size = c("100", "250", "1000"),
+                            size = c("100", "250"),
                             state_col = NULL,
                             country_col = NULL,
                             mainland_only = TRUE){
 
   res <- match.arg(resolution, choices = c("small", "large"))
   type <- match.arg(type, choices = c("country", "state"))
-  pixels <- match.arg(size, choices = c("100", "250", "1000"))
+  pixels <- match.arg(size, choices = c("100", "250"))
   kols <- colnames(data) %>% tolower()
   if(!is.null(country)){
     country <- country
