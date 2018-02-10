@@ -8,7 +8,7 @@ country_list <- function(){
 #' @description Returns a list of suitable countries.
 #' @export
 country_list_states <- function(){
-  rnaturalearthhires::states10 %>% st_as_sf() %>% pull(country) %>% unique() %>% sort()
+  rnaturalearthhires::states10 %>% st_as_sf() %>% pull(admin) %>% unique() %>% sort()
 }
 
 
