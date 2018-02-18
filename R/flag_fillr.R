@@ -4,8 +4,13 @@ flag_fillr <- function(data = data){
   # inspiration from jalapic's question, and inscaven's amazing answer:
   #https://stackoverflow.com/questions/28206611/adding-custom-image-to-geom-polygon-fill-in-ggplot
   # and Giora Simchoni's ggwithimages package, which reminded me I wanted to do this,
-  # and had the links to the above So question. Goooooo R community!
+  # and had the links to the above SO question. Goooooo R community!
   #http://giorasimchoni.com/2018/01/03/2018-01-03-congratulations-it-s-a-geom/
+
+  # remove NULL flag_images:
+  data <- data %>% as.data.frame() %>%
+    dplyr::filter(!is.na(partner), !is.na(iso)) %>%
+    as_data_frame()
 
   # establish bounding boxes
   xmin <- map(data$geometry, st_bbox) %>% map_dbl("xmin")
