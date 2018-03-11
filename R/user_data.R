@@ -49,9 +49,8 @@ flag_fillr_data <- function(data = NULL, country = NULL,
   kols <- colnames(data) %>% tolower()
   if(!is.null(country)){
     country <- country
-    if(country == "United States" | country == "US" | country == "USA"){
-      country <- "United States of America"
-    }
+    country <- ifelse(country %in% c("United States", "US", "USA"),
+           "United States of America", country)
   } else{
     country <- country_col
   }
@@ -100,12 +99,13 @@ flag_fillr_data <- function(data = NULL, country = NULL,
 
   # get data:
   if(type == "country"){
+    state <- NULL
     if(res == "small"){
       df <- rnaturalearth::countries110 %>%
         st_as_sf() %>% as_data_frame() %>%
         select(country = admin, geometry) %>%
         mutate(country = tolower(country)) %>%
-        dplyr::filter(country == UQ(country))
+        dplyr::filter(country %in% UQ(country))
 
       df_partner <- rnaturalearth::countries110 %>%
         st_as_sf() %>% as_data_frame() %>%
@@ -139,21 +139,25 @@ flag_fillr_data <- function(data = NULL, country = NULL,
       dplyr::filter(partner %in% UQ(partner))
   }
 
-  if(country == "netherlands" & mainland_only == TRUE){
-    df <- df %>%
-      dplyr::filter(!state %in% c("saba", "st. eustatius"))
+  if("netherlands" %in% country){
+    if(mainland_only == TRUE){
+      if(!is.null(state)){
+        df <- df %>% dplyr::filter(!state %in% c("saba", "st. eustatius"))
+      }
+    }
   }
   if("hong kong" %in% partner){
     df_partner <- df_partner %>%
       add_row(partner = "hong kong", iso = "hk")
   }
   # get flags:
-  flag_image <- png_readr(country, pixels, type = "country") ## need to get partners
+  flag_image <- png_readr(country, pixels, type = "country")
   flag_filterz <- gsub("\\.png", "", names(flag_image))
   messager(res, pixels)
   isos <- df_partner$iso
   flagz <- dplyr::data_frame(
-    country = country,
+    #country = country,
+    #country = df_partner$partner,
     iso = flag_filterz,
     flag_image = flag_image
   ) %>% dplyr::filter(iso %in% isos)
@@ -175,8 +179,10 @@ flag_fillr_data <- function(data = NULL, country = NULL,
   }
 
 
-  if(country == "united states of america" & mainland_only == TRUE){
-    df <- dplyr::filter(df, !state %in% c("hawaii", "district of columbia", "alaska"))
+  if("united states of america" %in% country){
+    if(mainland_only == TRUE){
+      df <- dplyr::filter(df, !state %in% c("hawaii", "district of columbia", "alaska"))
+    }
   }
   df <- df %>% st_as_sf()
   finalize(df)
