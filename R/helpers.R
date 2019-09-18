@@ -28,23 +28,30 @@ flag_loader <- function(pixels){
   #if(pixels == "1000") load("flag_list_1000px.rda")  too big :-(
 }
 
-flag_loader_states <- function(country){
+flag_loader_states <- function(country){ ## TODO rewrite this to get list from folder and check that
   country <- gsub(" ", "-", country)
-  if(country == "argentina"){
+  if (country == "argentina") {
     x <- get(data("flag_list_argentina"))
-  } else if(country == "australia"){
+  } else if (country == "australia") {
     x <- get(data("flag_list_australia"))
-  } else if(country == "brazil"){
+  } else if (country == "brazil") {
     x <- get(data("flag_list_brazil"))
-  } else if(country == "canada"){
+  } else if (country == "canada") {
     x <- get(data("flag_list_canada"))
-  } else if(country == "germany"){
+  } else if (country == "germany") {
     x <- get(data("flag_list_germany"))
-  } else if(country == "netherlands"){
+  } else if (country == "netherlands") {
     x <- get(data("flag_list_netherlands"))
-  } else if(country == "united-states-of-america"){
+  } else if (country == "united-states-of-america") {
     x <- get(data("flag_list_united_states_of_america"))
-  } else{
+  } else if (country == "spain") {
+    x <- get(data("flag_list_spain"))
+  } else if (country == "belgium") {
+    x <- get(data("flag_list_belgium"))
+  } else if (country == "switzerland") {
+    x <- get(data("flag_list_switzerland"))
+  }
+  else{
     stop("Lower-level flags not available for this country.")
   }
   return(x)
@@ -89,6 +96,11 @@ finalize <- function(data){
   message("Combining flags and data...\n")
   message("Creating plot...")
   flag_plotr(output)
+}
+
+# check for alpha values in flags
+alpha_check <- function(flag_image){
+  if(dim(flag_image)[3] > 3) hasalpha <- TRUE else hasalpha <- FALSE
 }
 
 ## goddamn you global variables check

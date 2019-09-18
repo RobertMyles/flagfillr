@@ -14,58 +14,49 @@
 #' flag_fillr_states(country = "Brazil")
 #' }
 #' @export
-flag_fillr_states <- function(country = NULL, mainland_only = TRUE){
+flag_fillr_states <- function(country = NULL, mainland_only = TRUE) {
   pixels <- ""
-  country <- tolower(country)
-  if(country == "united states" | country == "us" | country == "usa"){
-    country <- "united states of america"
+  kountry <- tolower(country)
+
+  if (kountry == "united states" | kountry == "us" | kountry == "usa") {
+    kountry <- "united states of america"
   }
-  data <- get_states_data(country)
+  data <- get_states_data(kountry)
 
   # some tidying up:
-  if(mainland_only == TRUE){
+  if (mainland_only == TRUE) {
     # d3 with projections has a better way of doing this
 
-    flag_image <- png_readr(country, pixels, type = "state")
+    flag_image <- png_readr(kountry, pixels, type = "state")
     flag_filterz <- gsub("\\.png", "", names(flag_image))
-    flagz <- dplyr::data_frame(
-      country = country,
+
+    flagz <- data.table(
+      country = kountry,
       name = flag_filterz,
       flag_image = flag_image
     )
-    data <- data %>% dplyr::filter(name %in% flag_filterz)
-    suppressMessages(data <- full_join(data, flagz) %>% st_as_sf())
-    if(country == "united states of america"){
-      data <- data %>%
-        dplyr::filter(!name %in% c("district_of_columbia", "alaska", "hawaii"))
+    data <- data[country == kountry][name %in% flag_filterz] ## why assign
+    data <- data[flagz, on = "name"] %>% st_as_sf()## why assign
+
+    if (kountry == "united states of america") {
+      data <- data[!name %in% c("district_of_columbia", "alaska", "hawaii")]## why assign
     }
-    if(country == "netherlands"){
-      data <- data %>%
-        dplyr::filter(!name %in% c("saba", "st._eustatius"))
+    if(kountry == "netherlands"){
+      data <- data[!name %in% c("saba", "st._eustatius")]## why assign
     }
 
     finalize(data)
-  } else{
+  } else {
     flag_image <- png_readr(country, pixels, type = "state")
     flag_filterz <- gsub("\\.png", "", names(flag_image))
-    flagz <- dplyr::data_frame(
-      country = country,
+    flagz <- data.table(
+      country = kountry,
       name = flag_filterz,
       flag_image = flag_image
     )
-    data <- data %>% dplyr::filter(name %in% flag_filterz)
-    suppressMessages(data <- full_join(data, flagz) %>% st_as_sf())
+    data <- data[name %in% flag_filterz] ## why assign
+    data <- data[flagz, on = "name"] %>% st_as_sf()
     finalize(data)
   }
-
 }
 
-# get data for state flag datasets:
-get_states_data <- function(country){
-  data <- rnaturalearthhires::states10 %>% sf::st_as_sf() %>%
-    dplyr::select(country = admin, name, geometry) %>%
-    mutate(country = tolower(country), name = tolower(name)) %>%
-    dplyr::filter(country == UQ(country), !is.na(name)) %>%
-    mutate(name = stringi::stri_trans_general(name, "Latin-ASCII"),
-           name = gsub(" ", "_", name))
-}

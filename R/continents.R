@@ -5,9 +5,20 @@
 #' @param continent (\code{character}). Data come from the rnaturalearth package.
 #' @param resolution resolution of rnaturalearth data.
 #' @param size size of png image.
+#' @importFrom tibble tibble
+#' @importFrom dplyr filter
+#' @importFrom dplyr full_join
+#' @importFrom dplyr select
+#' @importFrom dplyr mutate
+#' @importFrom tibble as_tibble
+### #' @import rlang
+#' @import data.table
+#' @importFrom stringr str_remove
+#' @importFrom stringi stri_trans_general
+#' @importFrom sf st_as_sf
 #' @examples
 #' \dontrun{
-#' flag_fillr_continent( continent = "Africa", resolution = "small", size = 100)
+#' flag_fillr_continent( continent = "Africa", resolution = "small", size = "100")
 #' }
 #' @export
 flag_fillr_continent <- function(continent = c("North America", "Asia", "Africa",
@@ -22,39 +33,24 @@ flag_fillr_continent <- function(continent = c("North America", "Asia", "Africa"
                                                 "Oceania"))
   # oceania looks like junk
   res <- match.arg(resolution, choices = c("small", "large"))
-  data <- get_continent_data(continent, res)
+  data <- get_continent_data(continent, res) %>% as.data.table()
   type <- "country"
   pixels <- match.arg(size, choices = c("100", "250", "1000"))
   flag_image <- png_readr(country = NULL, pixels, type)
   flag_filterz <- gsub("\\.png", "", names(flag_image))
   isos <- data$iso
   messager(res, pixels)
-  flagz <- dplyr::data_frame(
+
+  flagz <- data.table(
     iso = flag_filterz,
     flag_image = flag_image
-  ) %>%
-    dplyr::filter(iso %in% isos)
-  suppressMessages(data <- full_join(data, flagz) %>%
-                     dplyr::filter(!is.na(iso)) %>%
-                     st_as_sf())
+  ) %>% .[(iso %in% isos)]
+
+  data <- data[flagz, on = "iso"] ## why do I have to assign here?
+
   if(Europe_no_Russia == TRUE){
-    data <- data %>% dplyr::filter(name != "Russia")
+    data <- data[name != "Russia"]
   }
 
   finalize(data)
-}
-
-# get data for continent flag datasets:
-get_continent_data <- function(continent, res){
-  if(res == "small"){
-    data <- rnaturalearth::countries110 %>% sf::st_as_sf() %>%
-      dplyr::select(name, iso = iso_a2, continent, geometry) %>%
-      dplyr::filter(continent == UQ(continent)) %>%
-      mutate(iso = tolower(iso))
-  } else{
-    data <- rnaturalearthhires::countries10 %>% sf::st_as_sf() %>%
-      dplyr::select(name = NAME, iso = ISO_A2, continent = CONTINENT, geometry) %>%
-      dplyr::filter(continent == UQ(continent)) %>%
-      mutate(iso = tolower(iso))
-  }
 }

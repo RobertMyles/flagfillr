@@ -1,13 +1,9 @@
 
 ############# flag plot function ###############
-# uses:
-# > packageVersion("ggplot2")
-# [1] 2.2.1.9000
-#devtools::install_github("tidyverse/ggplot2")
 flag_plotr <- function(df){
   # thanks to Julio Trecenti for the help!
   p <- ggplot()
-  #df_list <- unique(df$name)
+  df <- st_as_sf(df) # double check
   df_list <- 1:nrow(df)
 
   for (i in seq_along(df_list)){
@@ -21,8 +17,7 @@ flag_plotr <- function(df){
     theme(panel.background = element_blank(),
           panel.border = element_blank(),
           axis.text = element_blank(),
-          panel.grid.major = element_line(colour = "white"), # hack from
-          #https://github.com/tidyverse/ggplot2/issues/2071
+          panel.grid.major = element_line(colour = "white"),
           axis.ticks = element_blank(),
           axis.line = element_blank())
 }

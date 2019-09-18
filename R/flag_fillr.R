@@ -1,3 +1,11 @@
+# https://www.crwflags.com
+# X11(type = "cairo")
+# spanish flags: https://en.wikipedia.org/wiki/List_of_Spanish_flags need attribution
+# sweden too https://en.wikipedia.org/wiki/List_of_flags_of_Sweden
+# egypt https://en.wikipedia.org/wiki/Flags_of_country_subdivisions#/media/File:Governadorat_d'Alexandria.svg
+# east timor too
+# + leave disclaimer/contact notice
+
 
 flag_fillr <- function(data = data){
   # establish boundaries; rescale to boundaries; filter into polygon
@@ -7,10 +15,17 @@ flag_fillr <- function(data = data){
   # and had the links to the above SO question. Goooooo R community!
   #http://giorasimchoni.com/2018/01/03/2018-01-03-congratulations-it-s-a-geom/
 
+  # double_check
+  data <- as.data.table(data)
+  # create 'partner' for non-partner types:
+  partner_check <- suppressWarnings(is.null(data$partner))
+  if (partner_check) {
+    data$partner <- data$name
+  }
   # remove NULL flag_images:
-  data <- data %>% as.data.frame() %>%
-    dplyr::filter(!is.na(partner), !is.na(iso)) %>%
-    as_data_frame()
+  ## TODO
+  ##data[!is.na(partner)][!is.na(iso)] ## is this necessary??
+
 
   # establish bounding boxes
   xmin <- map(data$geometry, st_bbox) %>% map_dbl("xmin")
@@ -19,9 +34,6 @@ flag_fillr <- function(data = data){
   ymax <- map(data$geometry, st_bbox) %>% map_dbl("ymax")
 
   # check for alpha value
-  alpha_check <- function(flag_image){
-    if(dim(flag_image)[3] > 3) hasalpha <- TRUE else hasalpha <- FALSE
-  }
   alph <- map_lgl(data$flag_image, alpha_check)
 
   # matrix of colours
@@ -30,6 +42,7 @@ flag_fillr <- function(data = data){
   matrixList <- vector("list", nrow(data))
   matrixList <- mapply(matrix, matrixList, data = "#00000000",
                        nrow = NumRow, ncol = NumCol, byrow = FALSE)
+
   # with thanks to Daniel Falbel:
   matrixList <- map2(data$flag_image, alph, function(x, y) {
     rgb(x[,,1], x[,,2], x[,,3], ifelse(y, x[,,4], 1)) %>%
@@ -37,18 +50,19 @@ flag_fillr <- function(data = data){
   })
 
   df_func <- function(DF){
-    suppressWarnings(
       DF <- DF %>%
-        set_colnames(value = 1:ncol(.)) %>%
-        mutate(Y = nrow(.):1) %>%
+        #set_colnames(value = 1:ncol(.)) %>%
+        .[, Y := .N:1] %>%   # Y is a sequence of nrow back to 1
+        as_tibble() %>%
         gather(X, color, -Y) %>%
-        dplyr::select(X, Y, color) %>%
-        mutate(X = as.integer(X))
-    )
+        #select(X, Y, color) %>%
+        as.data.table()
+      DF[, X := str_remove(X, "V")][, X := as.integer(X)]
+
     return(DF)
   }
 
-  matrixList <- map(matrixList, as.data.frame)
+  matrixList <- map(matrixList, as.data.table)
   matrixList <- map(matrixList, df_func)
   # resize
   for(m in 1:length(matrixList)){
@@ -77,11 +91,19 @@ flag_fillr <- function(data = data){
     })
     bind_rows(lists, .id = ".id")
   }
-  matrixList <- Map(poly_check, matrixList, latlonList)
+  tst <- matrixList[1:3]
+  tst2 <- latlonList[1:3]
+  tst3 <- map2(tst, tst2, poly_check)
+  #Map(poly_check, tst, tst2)
+  #matrixList <- Map(poly_check, matrixList, latlonList)
+  matrixList <- map2(matrixList, latlonList, poly_check)
 
   # put back in dataframe:
-  data <- data %>%
-    mutate(latlon = latlonList, plot_image = matrixList)
+
+  data[, `:=`(
+    latlon = latlonList,
+    plot_image = matrixList
+  )]
 
   return(data)
 }

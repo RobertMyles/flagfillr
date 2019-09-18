@@ -21,7 +21,7 @@ you to use flags as fills in a ggplot2 map. It will plot the map for you.
 }
 \examples{
 \dontrun{
-flag_fillr_continent( continent = "Africa", resolution = "small", size = 100)
+flag_fillr_continent( continent = "Africa", resolution = "small", size = "100")
 }
 }
 \author{
